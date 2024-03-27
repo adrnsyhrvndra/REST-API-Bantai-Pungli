@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
 const bcrypt = require('bcrypt');
+const port = dotenv.parsed.PORT;
 
 // Define Schema
 const UsersSchema = require('./models/userSchema');
@@ -39,6 +40,6 @@ app.use('/komentarPungli', require('./routes/komentarPungliRoutes'));
 // ==============================================================
 // ==============================================================
 
-app.listen(3000, () => {
+app.listen(port, () => {
       console.log(`Server is running on url ${dotenv.parsed.BASE_URL}`);
 });
