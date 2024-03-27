@@ -32,4 +32,9 @@ router.post('/', async (req, res) => {
       res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: komentarPungliData});
 });
 
+router.delete('/:id', async (req, res) => {
+      const komentarPungli = await KomentarPungliSchema.KomentarPungli.findByIdAndDelete(req.params.id);
+      res.json(komentarPungli);
+});
+
 module.exports = router;

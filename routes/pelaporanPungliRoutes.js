@@ -34,4 +34,9 @@ router.post('/', async (req, res) => {
       res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: pelaporanPungliData});
 });
 
+router.delete('/:id', async (req, res) => {
+      const pelaporanPungli = await PelaporanPungliSchema.PelaporanPungli.findByIdAndDelete(req.params.id);
+      res.json(pelaporanPungli);
+});
+
 module.exports = router;

@@ -3,6 +3,8 @@ const router = express.Router();
 
 // Define Schema
 const UsersSchema = require('../models/userSchema');
+const PelaporanPungliSchema = require('../models/pelaporanPungliSchema');
+const KomentarPungliSchema = require('../models/komentarPungliSchema');
 
 router.get('/', async (req, res) => {
       const users = await UsersSchema.Users.find();
@@ -35,6 +37,22 @@ router.post('/', async (req, res) => {
       usersData.save();
 
       res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: usersData});
+});
+
+router.delete('/:id', async (req, res) => {
+      const deleteUser = await UsersSchema.Users.findByIdAndDelete(req.params.id);
+
+      const deletePelaporanPungli = await PelaporanPungliSchema.PelaporanPungli.deleteOne({ userId: req.params.id });
+
+      const deleteKomentarPungli = await KomentarPungliSchema.KomentarPungli.deleteOne({ userId: req.params.id });
+
+      res.json({
+            status: 'success', 
+            message: 'Data Berhasil Dihapus', 
+            dataUser: deleteUser, 
+            dataPelaporanPungli: deletePelaporanPungli,
+            dataKomentarPungli: deleteKomentarPungli
+      });
 });
 
 module.exports = router;

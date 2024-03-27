@@ -37,4 +37,9 @@ router.post('/', async (req, res) => {
       res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: adminData});
 });
 
+router.delete('/:id', async (req, res) => {
+      const admin = await AdminSchema.Admin.findByIdAndDelete(req.params.id);
+      res.json(admin);
+});
+
 module.exports = router;
