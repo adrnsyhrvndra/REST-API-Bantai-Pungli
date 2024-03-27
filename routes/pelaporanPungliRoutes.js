@@ -14,4 +14,24 @@ router.get('/:id', async (req, res) => {
       res.json(pelaporanPungli);
 });
 
+router.post('/', async (req, res) => {
+      const { userId ,kategoriPungliId, judul_pelaporan, deskripsi_pelaporan, status_pelaporan, bukti_pendukung } = req.body;
+
+      const pelaporanPungliData = await new PelaporanPungliSchema.PelaporanPungli({
+            userId,
+            kategoriPungliId,
+            judul_pelaporan,
+            deskripsi_pelaporan,
+            tanggal_pelaporan: new Date(),
+            status_pelaporan,
+            bukti_pendukung,
+            created_at: new Date(),
+            updated_at: new Date()
+      });
+
+      pelaporanPungliData.save();
+
+      res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: pelaporanPungliData});
+});
+
 module.exports = router;

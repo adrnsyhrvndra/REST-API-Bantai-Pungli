@@ -14,4 +14,27 @@ router.get('/:id', async (req, res) => {
       res.json(admin);
 });
 
+router.post('/', async (req, res) => {
+      const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, foto_profile, status_online} = req.body;
+
+      const adminData = await new AdminSchema.Admin({
+            username,
+            password,
+            email,
+            nama_lengkap,
+            tanggal_lahir,
+            jenis_kelamin,
+            alamat,
+            no_telp,
+            foto_profile,
+            status_online,
+            created_at: new Date(),
+            updated_at: new Date()
+      });
+
+      adminData.save();
+
+      res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: adminData});
+});
+
 module.exports = router;

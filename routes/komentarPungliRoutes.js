@@ -14,4 +14,22 @@ router.get('/:id', async (req, res) => {
       res.json(komentarPungli);
 });
 
+router.post('/', async (req, res) => {
+      const { userId, pelaporanPungliId, komentar } = req.body;
+
+      const komentarPungliData = await new KomentarPungliSchema.KomentarPungli({
+            userId,
+            pelaporanPungliId,
+            komentar,
+            jumlah_upvote: 0,
+            tanggal_komentar: new Date(),
+            created_at: new Date(),
+            updated_at: new Date()
+      });
+
+      komentarPungliData.save();
+
+      res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: komentarPungliData});
+});
+
 module.exports = router;

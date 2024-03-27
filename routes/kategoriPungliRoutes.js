@@ -14,4 +14,18 @@ router.get('/:id', async (req, res) => {
       res.json(kategoriPungli);
 });
 
+router.post('/', async (req, res) => {
+      const { nama_kategori_pungli } = req.body;
+
+      const kategoriPungliData = await new KategoriPungliSchema.KategoriPungli({
+            nama_kategori_pungli,
+            created_at: new Date(),
+            updated_at: new Date()
+      });
+
+      kategoriPungliData.save();
+
+      res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: kategoriPungliData});
+});
+
 module.exports = router;
