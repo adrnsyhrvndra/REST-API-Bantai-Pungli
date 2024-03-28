@@ -73,26 +73,68 @@ router.post('/', upload.single('bukti_pendukung'), async (req, res) => {
       }
 });
 
-router.put('/:id', async (req,res) => {
+router.put('/:id', upload.single('bukti_pendukung'), async (req,res) => {
       const { userId ,kategoriPungliId, judul_pelaporan, deskripsi_pelaporan, tanggal_pelaporan, status_pelaporan, bukti_pendukung } = req.body;
 
-      const pelaporanPungliUpdate = await PelaporanPungliSchema.PelaporanPungli.findOneAndUpdate(
-            {_id: req.params.id},
-            {
-                  $set : {
-                        userId,
-                        kategoriPungliId,
-                        judul_pelaporan,
-                        deskripsi_pelaporan,
-                        tanggal_pelaporan: tanggal_pelaporan,
-                        status_pelaporan,
-                        bukti_pendukung,
-                        updated_at: new Date()
-                  }
-            },
-      );
+      if (req.file) {
 
-      res.json({status: 'success', message: 'Data Berhasil Diubah', data: pelaporanPungliUpdate});
+            cloudinary.uploader.upload(req.file.path, async (err, result) => {
+                  const pelaporanPungliUpdate = await PelaporanPungliSchema.PelaporanPungli.findOneAndUpdate(
+                        {_id: req.params.id},
+                        {
+                              $set : {
+                                    userId,
+                                    kategoriPungliId,
+                                    judul_pelaporan,
+                                    deskripsi_pelaporan,
+                                    tanggal_pelaporan: tanggal_pelaporan,
+                                    status_pelaporan,
+                                    bukti_pendukung: result.url,
+                                    updated_at: new Date()
+                              }
+                        },
+                  );
+
+                  if(err) {
+                        console.log(err);
+                        return res.status(500).json({
+                              success: false,
+                              message: "Error"
+                        })
+                  }
+      
+                  res.status(200).json({
+                        success: true,
+                        message: "Success",
+                        data_profile: result,
+                        data: pelaporanPungliUpdate
+                  });
+
+            });
+
+      } else {
+            const pelaporanPungliUpdate = await PelaporanPungliSchema.PelaporanPungli.findOneAndUpdate(
+                  {_id: req.params.id},
+                  {
+                        $set : {
+                              userId,
+                              kategoriPungliId,
+                              judul_pelaporan,
+                              deskripsi_pelaporan,
+                              tanggal_pelaporan: tanggal_pelaporan,
+                              status_pelaporan,
+                              bukti_pendukung: null,
+                              updated_at: new Date()
+                        }
+                  },
+            );
+
+            res.status(200).json({
+                  success: true,
+                  message: "Success",
+                  data: pelaporanPungliUpdate
+            });
+      }
 
 });
 

@@ -83,29 +83,77 @@ router.post('/', upload.single('foto_profile'), async (req, res) => {
       }
 });
 
-router.put('/:id', async (req,res) => {
+router.put('/:id', upload.single('foto_profile'), async (req,res) => {
       const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, foto_profile, status_online } = req.body;
 
-      const adminUpdate = await AdminSchema.Admin.findOneAndUpdate(
-            {_id: req.params.id},
-            {
-                  $set : {
-                        username,
-                        password,
-                        email,
-                        nama_lengkap,
-                        tanggal_lahir,
-                        jenis_kelamin,
-                        alamat,
-                        no_telp,
-                        foto_profile,
-                        status_online,
-                        updated_at: new Date()
-                  }
-            },
-      );
+      if (req.file) {
 
-      res.json({status: 'success', message: 'Data Berhasil Diupdate', data: adminUpdate});
+            cloudinary.uploader.upload(req.file.path, async (err, result) => {
+
+                  const adminUpdate = await AdminSchema.Admin.findOneAndUpdate(
+                        {_id: req.params.id},
+                        {
+                              $set : {
+                                    username,
+                                    password,
+                                    email,
+                                    nama_lengkap,
+                                    tanggal_lahir,
+                                    jenis_kelamin,
+                                    alamat,
+                                    no_telp,
+                                    foto_profile: result.url,
+                                    status_online,
+                                    updated_at: new Date()
+                              }
+                        },
+                  );
+
+                  if(err) {
+                        console.log(err);
+                        return res.status(500).json({
+                              success: false,
+                              message: "Error"
+                        })
+                  }
+
+                  res.status(200).json({
+                        success: true,
+                        message: "Success",
+                        data_profile: result,
+                        data: adminUpdate
+                  });
+
+            });
+
+      } else {
+
+            const adminUpdate = await AdminSchema.Admin.findOneAndUpdate(
+                  {_id: req.params.id},
+                  {
+                        $set : {
+                              username,
+                              password,
+                              email,
+                              nama_lengkap,
+                              tanggal_lahir,
+                              jenis_kelamin,
+                              alamat,
+                              no_telp,
+                              foto_profile: null,
+                              status_online,
+                              updated_at: new Date()
+                        }
+                  },
+            );
+
+            res.status(200).json({
+                  success: true,
+                  message: "Success",
+                  data: adminUpdate
+            });
+
+      }
 
 });
 
