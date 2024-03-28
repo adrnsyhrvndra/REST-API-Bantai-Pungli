@@ -29,6 +29,21 @@ router.post('/', async (req, res) => {
       res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: kategoriPungliData});
 });
 
+router.put('/:id', async (req,res) => {
+      const { nama_kategori_pungli } = req.body;
+
+      const kaetgoriPungliUpdate = await AdminSchema.Admin.findOneAndUpdate(
+            {userId: req.params.id},
+            {
+                  $set : {
+                        nama_kategori_pungli,
+                        updated_at: new Date()
+                  }
+            },
+      );
+
+});
+
 router.delete('/:id', async (req, res) => {
       const deleteKategoriPungli = await KategoriPungliSchema.KategoriPungli.findByIdAndDelete(req.params.id);
 
