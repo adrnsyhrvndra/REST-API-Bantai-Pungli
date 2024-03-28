@@ -43,7 +43,7 @@ router.put('/:id', async (req,res) => {
       const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, foto_profile, status_online } = req.body;
 
       const userUpdate = await UsersSchema.Users.findOneAndUpdate(
-            {userId: req.params.id},
+            {_id: req.params.id},
             {
                   $set : {
                         username,
@@ -60,6 +60,8 @@ router.put('/:id', async (req,res) => {
                   }
             },
       );
+
+      res.json({status: 'success', message: 'Data Berhasil Diupdate', data: userUpdate});
 
 });
 

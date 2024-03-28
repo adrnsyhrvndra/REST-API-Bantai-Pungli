@@ -32,8 +32,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req,res) => {
       const { nama_kategori_pungli } = req.body;
 
-      const kaetgoriPungliUpdate = await AdminSchema.Admin.findOneAndUpdate(
-            {userId: req.params.id},
+      const kaetgoriPungliUpdate = await KategoriPungliSchema.KategoriPungli.findOneAndUpdate(
+            {_id: req.params.id},
             {
                   $set : {
                         nama_kategori_pungli,
@@ -41,6 +41,8 @@ router.put('/:id', async (req,res) => {
                   }
             },
       );
+
+      res.json({status: 'success', message: 'Data Berhasil Diubah', data: kaetgoriPungliUpdate});
 
 });
 

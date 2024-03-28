@@ -35,23 +35,25 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req,res) => {
-      const { userId ,kategoriPungliId, judul_pelaporan, deskripsi_pelaporan, status_pelaporan, bukti_pendukung } = req.body;
+      const { userId ,kategoriPungliId, judul_pelaporan, deskripsi_pelaporan, tanggal_pelaporan, status_pelaporan, bukti_pendukung } = req.body;
 
-      const pelaporanPungliUpdate = await AdminSchema.Admin.findOneAndUpdate(
-            {userId: req.params.id},
+      const pelaporanPungliUpdate = await PelaporanPungliSchema.PelaporanPungli.findOneAndUpdate(
+            {_id: req.params.id},
             {
                   $set : {
                         userId,
                         kategoriPungliId,
                         judul_pelaporan,
                         deskripsi_pelaporan,
-                        tanggal_pelaporan: new Date(),
+                        tanggal_pelaporan: tanggal_pelaporan,
                         status_pelaporan,
                         bukti_pendukung,
                         updated_at: new Date()
                   }
             },
       );
+
+      res.json({status: 'success', message: 'Data Berhasil Diubah', data: pelaporanPungliUpdate});
 
 });
 
