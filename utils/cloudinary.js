@@ -2,9 +2,9 @@ const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv').config();
 
 cloudinary.config({
-      cloud_name: dotenv.parsed.CLOUDINARY_CLOUD_NAME,
-      api_key: dotenv.parsed.CLOUDINARY_API_KEY,
-      api_secret: dotenv.parsed.CLOUDINARY_SECRET_KEY
+      cloud_name: 'adriansyah-course-laravel7',
+      api_key: '362124478144354',
+      api_secret: '08Y6ihLuF09Y2OGrbf6x3wbZt1M'
 });
 
 module.exports = cloudinary
