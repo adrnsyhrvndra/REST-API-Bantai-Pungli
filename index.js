@@ -75,7 +75,7 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                         alamat,
                         no_telp,
                         status_online,
-                        foto_profile,
+                        foto_profile: result.url,
                         created_at: new Date(),
                         updated_at: new Date()
                   });
