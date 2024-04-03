@@ -9,6 +9,7 @@ const cloudinary = require('./utils/cloudinary');
 const upload = require('./middleware/multer');
 const jwt = require('jsonwebtoken');
 const session = require('cookie-session');
+const cors = require('cors')
 
 // Define Schema
 const UsersSchema = require('./models/userSchema');
@@ -35,6 +36,8 @@ app.use(session({
       resave: false,
       saveUninitialized: false
 }));
+
+app.use(cors());
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
