@@ -15,57 +15,96 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
-      const kategoriPungli = await KategoriPungliSchema.KategoriPungli.find();
-      res.json(kategoriPungli);
+      try {
+            const kategoriPungli = await KategoriPungliSchema.KategoriPungli.find();
+            res.json(kategoriPungli);
+
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.get('/:id', async (req, res) => {
-      const kategoriPungli = await KategoriPungliSchema.KategoriPungli.findById(req.params.id);
-      res.json(kategoriPungli);
+      try {
+            const kategoriPungli = await KategoriPungliSchema.KategoriPungli.findById(req.params.id);
+            res.json(kategoriPungli);
+            
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.post('/', async (req, res) => {
-      const { nama_kategori_pungli } = req.body;
+      try {
+            const { nama_kategori_pungli } = req.body;
 
-      const kategoriPungliData = await new KategoriPungliSchema.KategoriPungli({
-            nama_kategori_pungli,
-            created_at: new Date(),
-            updated_at: new Date()
-      });
-
-      kategoriPungliData.save();
-
-      res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: kategoriPungliData});
+            const kategoriPungliData = await new KategoriPungliSchema.KategoriPungli({
+                  nama_kategori_pungli,
+                  created_at: new Date(),
+                  updated_at: new Date()
+            });
+      
+            const data_keberhasilan_kategori_pungli = await kategoriPungliData.save();
+      
+            res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: data_keberhasilan_kategori_pungli});
+            
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.put('/:id', async (req,res) => {
-      const { nama_kategori_pungli } = req.body;
+      try {
+            const { nama_kategori_pungli } = req.body;
 
-      const kaetgoriPungliUpdate = await KategoriPungliSchema.KategoriPungli.findOneAndUpdate(
-            {_id: req.params.id},
-            {
-                  $set : {
-                        nama_kategori_pungli,
-                        updated_at: new Date()
-                  }
-            },
-      );
+            const kaetgoriPungliUpdate = await KategoriPungliSchema.KategoriPungli.findOneAndUpdate(
+                  {_id: req.params.id},
+                  {
+                        $set : {
+                              nama_kategori_pungli,
+                              updated_at: new Date()
+                        }
+                  },
+            );
+      
+            res.json({status: 'success', message: 'Data Berhasil Diubah', data: kaetgoriPungliUpdate});
 
-      res.json({status: 'success', message: 'Data Berhasil Diubah', data: kaetgoriPungliUpdate});
-
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.delete('/:id', async (req, res) => {
-      const deleteKategoriPungli = await KategoriPungliSchema.KategoriPungli.findByIdAndDelete(req.params.id);
+      try {
+            const deleteKategoriPungli = await KategoriPungliSchema.KategoriPungli.findByIdAndDelete(req.params.id);
 
-      const deletePelaporanPungli = await PelaporanPungliSchema.PelaporanPungli.deleteOne({ kategoriPungliId: req.params.id });
+            const deletePelaporanPungli = await PelaporanPungliSchema.PelaporanPungli.deleteOne({ kategoriPungliId: req.params.id });
+      
+            res.json({
+                  status: 'success', 
+                  message: 'Data Berhasil Dihapus', 
+                  dataKategoriPungli: deleteKategoriPungli, 
+                  dataPelaporanPungli: deletePelaporanPungli
+            });
 
-      res.json({
-            status: 'success', 
-            message: 'Data Berhasil Dihapus', 
-            dataKategoriPungli: deleteKategoriPungli, 
-            dataPelaporanPungli: deletePelaporanPungli
-      });
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 module.exports = router;
