@@ -20,7 +20,6 @@ const PelaporanPungliSchema = require('./models/pelaporanPungliSchema');
 const KomentarPungliSchema = require('./models/komentarPungliSchema');
 
 // Connect MongoDB
-// require('./utils/connection_db');
 mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaipunglimongo.ag0xudb.mongodb.net/db_pungli?retryWrites=true&w=majority`).then(() => {
       console.log('MongoDB connected');
 }).catch((err) => {
@@ -91,7 +90,7 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                         updated_at: new Date()
                   });
 
-                  const cek_keberhasilan_register = await usersDataRegister.save();
+                  const data_keberhasilan_register = await usersDataRegister.save();
 
                   if(err) {
                         console.log(err);
@@ -109,7 +108,7 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                         success: true,
                         message: "Success",
                         data_profile: result,
-                        data: cek_keberhasilan_register,
+                        data: data_keberhasilan_register,
                         accessToken: accessToken
                   });
 
@@ -132,7 +131,7 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                   updated_at: new Date()
             });
 
-            usersDataRegister.save();
+            const data_keberhasilan_register = await usersDataRegister.save();
 
             const accessToken = jwt.sign({ username }, process.env.SECRET_KEY, { expiresIn: '1d' });
             req.session.user = req.body;
@@ -140,7 +139,7 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
             res.status(200).json({
                   success: true,
                   message: "Success",
-                  data: usersDataRegister,
+                  data: data_keberhasilan_register,
                   accessToken: accessToken
             });
 
