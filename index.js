@@ -15,9 +15,6 @@ const mongoose = require('mongoose');
 // Define Schema
 const UsersSchema = require('./models/userSchema');
 const AdminSchema = require('./models/adminSchema');
-const KategoriPungliSchema = require('./models/kategoriPungliSchema');
-const PelaporanPungliSchema = require('./models/pelaporanPungliSchema');
-const KomentarPungliSchema = require('./models/komentarPungliSchema');
 
 // Connect MongoDB
 mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaipunglimongo.ag0xudb.mongodb.net/db_pungli?retryWrites=true&w=majority`).then(() => {
@@ -69,11 +66,52 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
        
             const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, status_online, foto_profile } = req.body;
 
-      const hashPassword = await bcrypt.hash( password, 8);
+            const hashPassword = await bcrypt.hash( password, 8);
 
-      if (req.file) {
+            if (req.file) {
 
-            cloudinary.uploader.upload(req.file.path, async (err, result) => {
+                  cloudinary.uploader.upload(req.file.path, async (err, result) => {
+
+                        const usersDataRegister = await UsersSchema.Users({
+                              username,
+                              password: hashPassword,
+                              email,
+                              nama_lengkap,
+                              tanggal_lahir,
+                              jenis_kelamin,
+                              alamat,
+                              no_telp,
+                              status_online,
+                              foto_profile: result.url,
+                              created_at: new Date(),
+                              updated_at: new Date()
+                        });
+
+                        const data_keberhasilan_register = await usersDataRegister.save();
+
+                        if(err) {
+                              console.log(err);
+                              return res.status(500).json({
+                                    success: false,
+                                    message: "Error"
+                              })
+                        }
+
+                        const accessToken = jwt.sign({ username }, process.env.SECRET_KEY, { expiresIn: '1d' });
+                        req.session.user = req.body;
+
+                        res.status(200).json({
+                              type: "REQ.FILE & CLOUDINARY",
+                              success: true,
+                              message: "Success",
+                              data_profile: result,
+                              data: data_keberhasilan_register,
+                              accessToken: accessToken
+                        });
+
+                  });
+
+            } else {
 
                   const usersDataRegister = await UsersSchema.Users({
                         username,
@@ -85,65 +123,24 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                         alamat,
                         no_telp,
                         status_online,
-                        foto_profile: result.url,
+                        foto_profile: null,
                         created_at: new Date(),
                         updated_at: new Date()
                   });
 
                   const data_keberhasilan_register = await usersDataRegister.save();
 
-                  if(err) {
-                        console.log(err);
-                        return res.status(500).json({
-                              success: false,
-                              message: "Error"
-                        })
-                  }
-
                   const accessToken = jwt.sign({ username }, process.env.SECRET_KEY, { expiresIn: '1d' });
                   req.session.user = req.body;
 
                   res.status(200).json({
-                        type: "REQ.FILE & CLOUDINARY",
                         success: true,
                         message: "Success",
-                        data_profile: result,
                         data: data_keberhasilan_register,
                         accessToken: accessToken
                   });
 
-            });
-
-      } else {
-
-            const usersDataRegister = await UsersSchema.Users({
-                  username,
-                  password: hashPassword,
-                  email,
-                  nama_lengkap,
-                  tanggal_lahir,
-                  jenis_kelamin,
-                  alamat,
-                  no_telp,
-                  status_online,
-                  foto_profile: null,
-                  created_at: new Date(),
-                  updated_at: new Date()
-            });
-
-            const data_keberhasilan_register = await usersDataRegister.save();
-
-            const accessToken = jwt.sign({ username }, process.env.SECRET_KEY, { expiresIn: '1d' });
-            req.session.user = req.body;
-
-            res.status(200).json({
-                  success: true,
-                  message: "Success",
-                  data: data_keberhasilan_register,
-                  accessToken: accessToken
-            });
-
-      }
+            }
             
       } catch (error) {
 
@@ -157,50 +154,220 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-      const { usernameOrEmail, password } = req.body;
-      const user = await UsersSchema.Users.findOne({
-            $or: [
-                  { username: usernameOrEmail },
-                  { email: usernameOrEmail }
-            ]
-      });
       
-      if(user){
+      try {
+            
+            const { usernameOrEmail, password } = req.body;
+            const user = await UsersSchema.Users.findOne({
+                  $or: [
+                        { username: usernameOrEmail },
+                        { email: usernameOrEmail }
+                  ]
+            });
+            
+            if(user){
 
-            const isMatch = await bcrypt.compare(password, user.password);
+                  const isMatch = await bcrypt.compare(password, user.password);
 
-            if(isMatch){
-                  const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
-                  req.session.user = req.body;
+                  if(isMatch){
+                        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
+                        req.session.user = req.body;
 
-                  res.status(200).json({
-                        success: true,
-                        message: "Login Success",
-                        data: user,
-                        accessToken: accessToken
-                  });
+                        res.status(200).json({
+                              success: true,
+                              message: "Login Success",
+                              data: user,
+                              accessToken: accessToken
+                        });
+
+                  } else {
+                        res.status(401).json({
+                              success: false,
+                              message: "Password Is Wrong"
+                        });
+                  }
 
             } else {
                   res.status(401).json({
                         success: false,
-                        message: "Password Is Wrong"
+                        message: "Username Or Email Is Wrong. User Not Found"
                   });
             }
 
-      } else {
-            res.status(401).json({
+      } catch (error) {
+            
+            res.status(500).json({
                   success: false,
-                  message: "Username Or Email Is Wrong. User Not Found"
+                  message: error.message
             });
+
       }
+
 });
 
-app.post('/logout', (req, res) => {
-      req.session.destroy();
-      res.status(200).json({
-            success: true,
-            message: "Logout Success"
-      });
+app.post('/logout', async (req, res) => {
+
+      try {
+
+            req.session.destroy();
+            res.status(200).json({
+                  success: true,
+                  message: "Logout Success"
+            });
+
+      } catch (error) {
+            
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
+      
+});
+
+app.post('/registerAdmin', upload.single('foto_profile'), async (req, res) => {
+
+      try {
+       
+            const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, status_online, foto_profile } = req.body;
+
+            const hashPassword = await bcrypt.hash( password, 8);
+
+            if (req.file) {
+
+                  cloudinary.uploader.upload(req.file.path, async (err, result) => {
+
+                        const adminDataRegister = await AdminSchema.Admin({
+                              username,
+                              password: hashPassword,
+                              email,
+                              nama_lengkap,
+                              tanggal_lahir,
+                              jenis_kelamin,
+                              alamat,
+                              no_telp,
+                              status_online,
+                              foto_profile: result.url,
+                              created_at: new Date(),
+                              updated_at: new Date()
+                        });
+
+                        const data_keberhasilan_register = await adminDataRegister.save();
+
+                        if(err) {
+                              console.log(err);
+                              return res.status(500).json({
+                                    success: false,
+                                    message: "Error"
+                              })
+                        }
+
+                        const accessToken = jwt.sign({ username }, process.env.SECRET_KEY, { expiresIn: '1d' });
+                        req.session.user = req.body;
+
+                        res.status(200).json({
+                              type: "REQ.FILE & CLOUDINARY",
+                              success: true,
+                              message: "Success",
+                              data_profile: result,
+                              data: data_keberhasilan_register,
+                              accessToken: accessToken
+                        });
+
+                  });
+
+            } else {
+
+                  const adminDataRegister = await AdminSchema.Admin({
+                        username,
+                        password: hashPassword,
+                        email,
+                        nama_lengkap,
+                        tanggal_lahir,
+                        jenis_kelamin,
+                        alamat,
+                        no_telp,
+                        status_online,
+                        foto_profile: null,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                  });
+
+                  const data_keberhasilan_register = await adminDataRegister.save();
+
+                  const accessToken = jwt.sign({ username }, process.env.SECRET_KEY, { expiresIn: '1d' });
+                  req.session.user = req.body;
+
+                  res.status(200).json({
+                        success: true,
+                        message: "Success",
+                        data: data_keberhasilan_register,
+                        accessToken: accessToken
+                  });
+
+            }
+            
+      } catch (error) {
+
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+            
+      }
+
+});
+
+app.post('/loginAdmin', async (req, res) => {
+      
+      try {
+            
+            const { usernameOrEmail, password } = req.body;
+            const admin = await AdminSchema.Admin.findOne({
+                  $or: [
+                        { username: usernameOrEmail },
+                        { email: usernameOrEmail }
+                  ]
+            });
+            
+            if(admin){
+
+                  const isMatch = await bcrypt.compare(password, admin.password);
+
+                  if(isMatch){
+                        const accessToken = jwt.sign({ username: admin.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
+                        req.session.user = req.body;
+
+                        res.status(200).json({
+                              success: true,
+                              message: "Login Success",
+                              data: user,
+                              accessToken: accessToken
+                        });
+
+                  } else {
+                        res.status(401).json({
+                              success: false,
+                              message: "Password Is Wrong"
+                        });
+                  }
+
+            } else {
+                  res.status(401).json({
+                        success: false,
+                        message: "Username Or Email Is Wrong. User Not Found"
+                  });
+            }
+
+      } catch (error) {
+            
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+
+      }
+
 });
 
 app.use('/users', authenticateToken, require('./routes/usersRoutes'));
