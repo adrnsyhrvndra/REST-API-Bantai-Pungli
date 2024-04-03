@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 
 // Connect MongoDB
-require('../utils/connection_db');
+// require('../utils/connection_db');
+
+mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaipunglimongo.ag0xudb.mongodb.net/db_pungli?retryWrites=true&w=majority`).then(() => {
+      console.log('MongoDB connected');
+}).catch((err) => {
+      console.log('MongoDB connection error: ' + err);
+});
 
 const userSchema = new mongoose.Schema({
       username: {

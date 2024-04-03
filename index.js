@@ -9,7 +9,8 @@ const cloudinary = require('./utils/cloudinary');
 const upload = require('./middleware/multer');
 const jwt = require('jsonwebtoken');
 const session = require('cookie-session');
-const cors = require('cors')
+const cors = require('cors');
+const mongoose = require('mongoose');
 
 // Define Schema
 const UsersSchema = require('./models/userSchema');
@@ -19,7 +20,12 @@ const PelaporanPungliSchema = require('./models/pelaporanPungliSchema');
 const KomentarPungliSchema = require('./models/komentarPungliSchema');
 
 // Connect MongoDB
-require('./utils/connection_db');
+// require('./utils/connection_db');
+mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaipunglimongo.ag0xudb.mongodb.net/db_pungli?retryWrites=true&w=majority`).then(() => {
+      console.log('MongoDB connected');
+}).catch((err) => {
+      console.log('MongoDB connection error: ' + err);
+});
 
 // Define middleware
 app.use(express.urlencoded({extended: true}));
