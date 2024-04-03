@@ -8,7 +8,7 @@ const port = dotenv.parsed.PORT || 3000;
 const cloudinary = require('./utils/cloudinary');
 const upload = require('./middleware/multer');
 const jwt = require('jsonwebtoken');
-const session = require('cookie-session');
+const session = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
