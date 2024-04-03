@@ -91,7 +91,7 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                         updated_at: new Date()
                   });
 
-                  usersDataRegister.save();
+                  const cek_keberhasilan_register = await usersDataRegister.save();
 
                   if(err) {
                         console.log(err);
@@ -105,10 +105,11 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                   req.session.user = req.body;
 
                   res.status(200).json({
+                        type: "REQ.FILE & CLOUDINARY",
                         success: true,
                         message: "Success",
                         data_profile: result,
-                        data: usersDataRegister,
+                        data: cek_keberhasilan_register,
                         accessToken: accessToken
                   });
 
