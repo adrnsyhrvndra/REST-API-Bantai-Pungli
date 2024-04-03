@@ -14,36 +14,68 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
-      const komentarPungli = await KomentarPungliSchema.KomentarPungli.find().populate('userId').populate('pelaporanPungliId');
-      res.json(komentarPungli);
+      try {
+            const komentarPungli = await KomentarPungliSchema.KomentarPungli.find().populate('userId').populate('pelaporanPungliId');
+            res.json(komentarPungli);
+            
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.get('/:id', async (req, res) => {
-      const komentarPungli = await KomentarPungliSchema.KomentarPungli.findById(req.params.id).populate('userId').populate('pelaporanPungliId');
-      res.json(komentarPungli);
+      try {
+            const komentarPungli = await KomentarPungliSchema.KomentarPungli.findById(req.params.id).populate('userId').populate('pelaporanPungliId');
+            res.json(komentarPungli);
+            
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.post('/', async (req, res) => {
-      const { userId, pelaporanPungliId, komentar } = req.body;
+      try {
+            const { userId, pelaporanPungliId, komentar } = req.body;
 
-      const komentarPungliData = await new KomentarPungliSchema.KomentarPungli({
-            userId,
-            pelaporanPungliId,
-            komentar,
-            jumlah_upvote: 0,
-            tanggal_komentar: new Date(),
-            created_at: new Date(),
-            updated_at: new Date()
-      });
+            const komentarPungliData = await new KomentarPungliSchema.KomentarPungli({
+                  userId,
+                  pelaporanPungliId,
+                  komentar,
+                  jumlah_upvote: 0,
+                  tanggal_komentar: new Date(),
+                  created_at: new Date(),
+                  updated_at: new Date()
+            });
+      
+            const data_keberhasilan_komentar_pungli = await komentarPungliData.save();
+      
+            res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: data_keberhasilan_komentar_pungli});
 
-      komentarPungliData.save();
-
-      res.json({status: 'success', message: 'Data Berhasil Ditambahkan', data: komentarPungliData});
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 router.delete('/:id', async (req, res) => {
-      const komentarPungli = await KomentarPungliSchema.KomentarPungli.findByIdAndDelete(req.params.id);
-      res.json(komentarPungli);
+      try {
+            const komentarPungli = await KomentarPungliSchema.KomentarPungli.findByIdAndDelete(req.params.id);
+            res.json(komentarPungli);
+            
+      } catch (error) {
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+      }
 });
 
 module.exports = router;
