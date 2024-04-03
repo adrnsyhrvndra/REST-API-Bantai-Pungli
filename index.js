@@ -341,7 +341,7 @@ app.post('/loginAdmin', async (req, res) => {
                         res.status(200).json({
                               success: true,
                               message: "Login Success",
-                              data: user,
+                              data: admin,
                               accessToken: accessToken
                         });
 
@@ -363,6 +363,7 @@ app.post('/loginAdmin', async (req, res) => {
             
             res.status(500).json({
                   success: false,
+                  statusCatch: true,
                   message: error.message
             });
 
