@@ -59,8 +59,10 @@ const authenticateToken = (req, res, next) => {
 // define routes
 
 app.post('/register', upload.single('foto_profile'), async (req, res) => {
-      
-      const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, status_online, foto_profile } = req.body;
+
+      try {
+       
+            const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, status_online, foto_profile } = req.body;
 
       const hashPassword = await bcrypt.hash( password, 8);
 
@@ -135,6 +137,15 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
                   accessToken: accessToken
             });
 
+      }
+            
+      } catch (error) {
+
+            res.status(500).json({
+                  success: false,
+                  message: error.message
+            });
+            
       }
 
 });
