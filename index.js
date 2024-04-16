@@ -28,7 +28,8 @@ app.use(cors({
       origin: '*',
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true
+      credentials: true,
+      optionSuccessStatus:200,
 }));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -158,9 +159,6 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
 });
 
 app.post('/loginUser', async (req, res) => {
-      
-      res.header("Access-Control-Allow-Origin","*");
-      res.header("Access-Control-Allow-Credentials",true);
 
       try {
             
