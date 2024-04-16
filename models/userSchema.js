@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
             required: [true, 'Alamat Lengkap is required'],
       },
       no_telp: {
-            type: Number,
+            type: String,
             required: [true, 'No. Telp is required'],
       },
       foto_profile: {
