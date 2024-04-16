@@ -159,6 +159,9 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
 
 app.post('/loginUser', async (req, res) => {
       
+      res.header("Access-Control-Allow-Origin","*");
+      res.header("Access-Control-Allow-Credentials",true);
+
       try {
             
             const { usernameOrEmail, password } = req.body;
