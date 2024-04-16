@@ -45,6 +45,13 @@ app.use(session({
       saveUninitialized: false
 }));
 
+app.use((req, res, next) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      next();
+});
+
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
       const authHeader = req.headers['authorization'];
@@ -176,11 +183,6 @@ app.post('/loginUser', async (req, res) => {
                   if(isMatch){
                         const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
                         req.session.user = req.body;
-
-                        // Set CORS headers
-                        res.setHeader('Access-Control-Allow-Origin', '*');
-                        res.setHeader('Access-Control-Allow-Methods', 'POST');
-                        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
                         res.status(200).json({
                               success: true,
