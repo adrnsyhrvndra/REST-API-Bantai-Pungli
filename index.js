@@ -24,7 +24,11 @@ mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaip
 });
 
 // Define middleware
-app.use(cors());
+app.use(cors({
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
