@@ -158,58 +158,6 @@ app.post('/register', upload.single('foto_profile'), async (req, res) => {
 
 });
 
-app.post('/login', async (req, res) => {
-      
-      try {
-            
-            const { usernameOrEmail, password } = req.body;
-            const user = await UsersSchema.Users.findOne({
-                  $or: [
-                        { username: usernameOrEmail },
-                        { email: usernameOrEmail }
-                  ]
-            });
-            
-            if(user){
-
-                  const isMatch = await bcrypt.compare(password, user.password);
-
-                  if(isMatch){
-                        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
-                        req.session.user = req.body;
-
-                        res.status(200).json({
-                              success: true,
-                              message: "Login Success",
-                              data: user,
-                              accessToken: accessToken
-                        });
-
-                  } else {
-                        res.status(401).json({
-                              success: false,
-                              message: "Password Is Wrong"
-                        });
-                  }
-
-            } else {
-                  res.status(401).json({
-                        success: false,
-                        message: "Username Or Email Is Wrong. User Not Found"
-                  });
-            }
-
-      } catch (error) {
-            
-            res.status(500).json({
-                  success: false,
-                  message: error.message
-            });
-
-      }
-
-});
-
 app.post('/loginUser', async (req, res) => {
       
       try {
