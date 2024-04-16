@@ -178,6 +178,11 @@ app.post('/loginUser', async (req, res) => {
                         const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
                         req.session.user = req.body;
 
+                        // Set CORS headers
+                        res.setHeader('Access-Control-Allow-Origin', '*');
+                        res.setHeader('Access-Control-Allow-Methods', 'POST');
+                        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
                         res.status(200).json({
                               success: true,
                               message: "Login Success",
