@@ -181,7 +181,7 @@ app.post('/loginUser', async (req, res) => {
                         // Set CORS headers
                         res.setHeader('Access-Control-Allow-Origin', '*');
                         res.setHeader('Access-Control-Allow-Methods', 'POST');
-                        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+                        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
                         res.status(200).json({
                               success: true,
