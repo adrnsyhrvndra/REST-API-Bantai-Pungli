@@ -174,7 +174,7 @@ app.post('/loginUser', async (req, res) => {
                   const isMatch = await bcrypt.compare(password, user.password);
 
                   if(isMatch){
-                        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
+                        const accessToken = jwt.sign({ username: user.username }, 'secret-key', { expiresIn: '1d' });
                         req.session.user = req.body;
 
                         res.status(200).json({
