@@ -375,6 +375,8 @@ app.post('/loginAdmin', async (req, res) => {
 
 });
 
+
+// External Route
 app.use('/users', authenticateToken, require('./routes/usersRoutes'));
 app.use('/admin', authenticateToken, require('./routes/adminRoutes'));
 app.use('/kategoriPungli', authenticateToken, require('./routes/kategoriPungliRoutes'));
