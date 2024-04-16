@@ -13,7 +13,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const corsOptions ={
-      origin: true, 
+      origin: '*',
       credentials:true
 }
 
