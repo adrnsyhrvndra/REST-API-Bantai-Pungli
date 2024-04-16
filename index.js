@@ -29,6 +29,7 @@ mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaip
 });
 
 // Define middleware
+app.use(cors(corsOptions));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
@@ -43,8 +44,6 @@ app.use(session({
       resave: false,
       saveUninitialized: false
 }));
-
-app.use(cors(corsOptions));
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
