@@ -12,6 +12,12 @@ const session = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+const corsOptions ={
+      origin:'http://localhost:3000', 
+      credentials:true,            //access-control-allow-credentials:true
+      optionSuccessStatus:200
+}
+
 // Define Schema
 const UsersSchema = require('./models/userSchema');
 const AdminSchema = require('./models/adminSchema');
@@ -39,7 +45,7 @@ app.use(session({
       saveUninitialized: false
 }));
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(function(req, res, next) {
       res.setHeader("Access-Control-Allow-Origin", "*");
