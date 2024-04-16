@@ -12,11 +12,6 @@ const session = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const corsOptions ={
-      origin: '*',
-      credentials:true
-}
-
 // Define Schema
 const UsersSchema = require('./models/userSchema');
 const AdminSchema = require('./models/adminSchema');
@@ -29,7 +24,7 @@ mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaip
 });
 
 // Define middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
