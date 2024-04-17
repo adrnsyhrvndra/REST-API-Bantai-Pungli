@@ -5,15 +5,6 @@ const router = express.Router();
 const KategoriPungliSchema = require('../models/kategoriPungliSchema');
 const PelaporanPungliSchema = require('../models/pelaporanPungliSchema');
 
-// Middleware To Check Authentication
-router.use((req, res, next) => {
-      if (!req.session.user) {
-            res.send('Please Login First You Are Not Authenticated');
-      } else {
-            next();
-      }
-});
-
 router.get('/', async (req, res) => {
       try {
             const kategoriPungli = await KategoriPungliSchema.KategoriPungli.find();

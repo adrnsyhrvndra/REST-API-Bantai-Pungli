@@ -6,16 +6,6 @@ const upload = require('../middleware/multer');
 // Define Schema
 const AdminSchema = require('../models/adminSchema');
 
-// Middleware To Check Authentication
-router.use((req, res, next) => {
-      if (!req.session.user) {
-            res.send('Please Login First You Are Not Authenticated');
-      } else {
-            next();
-      }
-});
-
-
 router.get('/', async (req, res) => {
       try {
             const admin = await AdminSchema.Admin.find();

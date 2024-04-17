@@ -4,15 +4,6 @@ const router = express.Router();
 // Define Schema
 const KomentarPungliSchema = require('../models/komentarPungliSchema');
 
-// Middleware To Check Authentication
-router.use((req, res, next) => {
-      if (!req.session.user) {
-            res.send('Please Login First You Are Not Authenticated');
-      } else {
-            next();
-      }
-});
-
 router.get('/', async (req, res) => {
       try {
             const komentarPungli = await KomentarPungliSchema.KomentarPungli.find().populate('userId').populate('pelaporanPungliId');
