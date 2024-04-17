@@ -24,13 +24,7 @@ mongoose.connect(`mongodb+srv://adrimediawebdevindonesia:ynrt!e_WyC3F_vv@bantaip
 });
 
 // Define middleware
-app.use(cors({
-      origin: '*',
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true,
-      optionSuccessStatus:200,
-}));
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
@@ -175,7 +169,7 @@ app.post('/loginUser', async (req, res) => {
                   const isMatch = await bcrypt.compare(password, user.password);
 
                   if(isMatch){
-                        const accessToken = jwt.sign({ username: user.username }, 'secret-key', { expiresIn: '1d' });
+                        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '1d' });
                         req.session.user = req.body;
 
                         res.status(200).json({
