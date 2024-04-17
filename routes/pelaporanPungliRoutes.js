@@ -76,7 +76,7 @@ router.post('/', upload.single('bukti_pendukung'), async (req, res) => {
                         deskripsi_pelaporan,
                         tanggal_pelaporan: new Date(),
                         status_pelaporan,
-                        bukti_pendukung: null,
+                        bukti_pendukung,
                         created_at: new Date(),
                         updated_at: new Date()
                   });
