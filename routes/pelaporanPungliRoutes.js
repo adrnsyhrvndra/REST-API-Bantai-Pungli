@@ -69,6 +69,7 @@ router.post('/', upload.single('bukti_pendukung'), async (req, res) => {
                   });
 
             } else {
+                  
                   const pelaporanPungliData = await new PelaporanPungliSchema.PelaporanPungli({
                         userId,
                         kategoriPungliId,
@@ -149,7 +150,7 @@ router.put('/:id', upload.single('bukti_pendukung'), async (req,res) => {
                                     deskripsi_pelaporan,
                                     tanggal_pelaporan: tanggal_pelaporan,
                                     status_pelaporan,
-                                    bukti_pendukung: null,
+                                    bukti_pendukung,
                                     updated_at: new Date()
                               }
                         },

@@ -88,7 +88,7 @@ router.post('/', upload.single('foto_profile'), async (req, res) => {
                         jenis_kelamin,
                         alamat,
                         no_telp,
-                        foto_profile: null,
+                        foto_profile,
                         status_online,
                         created_at: new Date(),
                         updated_at: new Date()
@@ -168,7 +168,7 @@ router.put('/:id', upload.single('foto_profile'), async (req,res) => {
                                     jenis_kelamin,
                                     alamat,
                                     no_telp,
-                                    foto_profile: null,
+                                    foto_profile,
                                     status_online,
                                     updated_at: new Date()
                               }
