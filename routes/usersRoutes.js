@@ -121,11 +121,73 @@ router.put('/:id', upload.single('foto_profile'), async (req,res) => {
 
             const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, foto_profile, status_online } = req.body;
 
-            const hashPassword = await bcrypt.hash( password, 8);
+            const user = await UsersSchema.Users.findOne({
+                  $or: [
+                        { username: username },
+                        { email: email }
+                  ]
+            });
+
+            const hashPassword = await bcrypt.hash(password, 8);
 
             if (req.file) {
 
-                  cloudinary.uploader.upload(req.file.path, async (err, result) => {
+                  const isMatch = await bcrypt.compare(password, user.password);
+
+                  if (isMatch) {
+
+                        cloudinary.uploader.upload(req.file.path, async (err, result) => {
+                              const userUpdate = await UsersSchema.Users.findOneAndUpdate(
+                                    {_id: req.params.id},
+                                    {
+                                          $set : {
+                                                username,
+                                                password: hashPassword,
+                                                email,
+                                                nama_lengkap,
+                                                tanggal_lahir,
+                                                jenis_kelamin,
+                                                alamat,
+                                                no_telp,
+                                                foto_profile: result.url,
+                                                status_online,
+                                                updated_at: new Date()
+                                          }
+                                    },
+                              );
+      
+                              if(err) {
+                                    console.log(err);
+                                    return res.status(500).json({
+                                          success: false,
+                                          message: "Error"
+                                    })
+                              }
+      
+                              res.status(200).json({
+                                    success: true,
+                                    message: "Success",
+                                    data_profile: result,
+                                    data: userUpdate
+                              });
+                        });
+
+                  } else {
+
+                        res.status(500).json({
+                              success: false,
+                              message: 'Password Tidak Cocok'
+                        });
+
+                  }
+
+
+            } else {
+
+                  const isMatch = await bcrypt.compare(password, user.password);
+
+                  if (isMatch) {
+
                         const userUpdate = await UsersSchema.Users.findOneAndUpdate(
                               {_id: req.params.id},
                               {
@@ -138,55 +200,28 @@ router.put('/:id', upload.single('foto_profile'), async (req,res) => {
                                           jenis_kelamin,
                                           alamat,
                                           no_telp,
-                                          foto_profile: result.url,
+                                          foto_profile,
                                           status_online,
                                           updated_at: new Date()
                                     }
                               },
                         );
-
-                        if(err) {
-                              console.log(err);
-                              return res.status(500).json({
-                                    success: false,
-                                    message: "Error"
-                              })
-                        }
-
+      
                         res.status(200).json({
                               success: true,
                               message: "Success",
-                              data_profile: result,
                               data: userUpdate
                         });
-                  });
 
-            } else {
+                  } else {
 
-                  const userUpdate = await UsersSchema.Users.findOneAndUpdate(
-                        {_id: req.params.id},
-                        {
-                              $set : {
-                                    username,
-                                    password: hashPassword,
-                                    email,
-                                    nama_lengkap,
-                                    tanggal_lahir,
-                                    jenis_kelamin,
-                                    alamat,
-                                    no_telp,
-                                    foto_profile,
-                                    status_online,
-                                    updated_at: new Date()
-                              }
-                        },
-                  );
+                        res.status(500).json({
+                              success: false,
+                              message: 'Password Tidak Cocok'
+                        });
 
-                  res.status(200).json({
-                        success: true,
-                        message: "Success",
-                        data: userUpdate
-                  });
+                  }
+
             }
 
       } catch (error) {
