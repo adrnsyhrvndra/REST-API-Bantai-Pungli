@@ -121,14 +121,9 @@ router.put('/:id', upload.single('foto_profile'), async (req,res) => {
 
             const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, foto_profile, status_online } = req.body;
 
-            const user = await UsersSchema.Users.findOne({
-                  $or: [
-                        { username: username },
-                        { email: email }
-                  ]
-            });
-
             const hashPassword = await bcrypt.hash(password, 8);
+            
+            const user = await UsersSchema.Users.findById(req.params.id);
 
             if (req.file) {
 

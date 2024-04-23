@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
       nama_lengkap: {
             type: String,
             required: [true, 'Nama Lengkap is required'],
-            max: [45, 'Nama Lurator must be less than 45 characters'],
+            max: [45, 'Nama Lengkap must be less than 45 characters'],
       },
       tanggal_lahir: {
             type: Date,
