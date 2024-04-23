@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require('../utils/cloudinary');
 const upload = require('../middleware/multer');
+const bcrypt = require('bcrypt');
 
 // Define Schema
 const UsersSchema = require('../models/userSchema');
@@ -115,17 +116,22 @@ router.post('/', upload.single('foto_profile'), async (req, res) => {
 });
 
 router.put('/:id', upload.single('foto_profile'), async (req,res) => {
+
       try {
+
             const { username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, alamat, no_telp, foto_profile, status_online } = req.body;
 
+            const hashPassword = await bcrypt.hash( password, 8);
+
             if (req.file) {
+
                   cloudinary.uploader.upload(req.file.path, async (err, result) => {
                         const userUpdate = await UsersSchema.Users.findOneAndUpdate(
                               {_id: req.params.id},
                               {
                                     $set : {
                                           username,
-                                          password,
+                                          password: hashPassword,
                                           email,
                                           nama_lengkap,
                                           tanggal_lahir,
@@ -156,12 +162,13 @@ router.put('/:id', upload.single('foto_profile'), async (req,res) => {
                   });
 
             } else {
+
                   const userUpdate = await UsersSchema.Users.findOneAndUpdate(
                         {_id: req.params.id},
                         {
                               $set : {
                                     username,
-                                    password,
+                                    password: hashPassword,
                                     email,
                                     nama_lengkap,
                                     tanggal_lahir,
