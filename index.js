@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -376,7 +375,9 @@ app.use('/users', authenticateToken, require('./routes/usersRoutes'));
 app.use('/admin', authenticateToken, require('./routes/adminRoutes'));
 app.use('/kategoriPungli', authenticateToken, require('./routes/kategoriPungliRoutes'));
 app.use('/pelaporanPungli', authenticateToken, require('./routes/pelaporanPungliRoutes'));
+app.use('/pelaporanPungliNotAuth', require('./routes/pelaporanPungliNotAuthRoutes'));
 app.use('/komentarPungli', authenticateToken, require('./routes/komentarPungliRoutes'));
+app.use('/komentarPungliNotAuth', require('./routes/komentarPungliNotAuthRoutes'));
 
 // ==============================================================
 // ==============================================================

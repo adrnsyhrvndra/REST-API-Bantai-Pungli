@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 // Define Schema
-const PelaporanPungliSchema = require('../models/pelaporanPungliSchema');
+const KomentarPungliSchema = require('../models/komentarPungliSchema');
 
 router.get('/', async (req, res) => {
       try {
-            const pelaporanPungli = await PelaporanPungliSchema.PelaporanPungli.find().populate('userId').populate('kategoriPungliId');
-            res.json(pelaporanPungli);
-
+            const komentarPungli = await KomentarPungliSchema.KomentarPungli.find().populate('userId').populate('pelaporanPungliId');
+            res.json(komentarPungli);
+            
       } catch (error) {
             res.status(500).json({
                   success: false,
